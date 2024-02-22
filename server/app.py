@@ -38,25 +38,51 @@ def get_by_id(id):
 
     return make_response(body, status)
 
+# @app.route('/earthquakes/magnitude/<float:magnitude>')
+# def get_by_magnitude(magnitude):
+#     earthquake = Earthquake.query.filter(Earthquake.magnitude >= magnitude).all()
+
+#     if earthquake:
+#         body = {
+#             'count': len(earthquake),
+#             'quakes': [
+#                 {
+#                 'id': earthquake.id,
+#                 'location': earthquake.location,
+#                 'magnitude': earthquake.magnitude,
+#                 'year': earthquake.year
+#                 },
+#             ]
+#         }
+#         status = 200
+#     else:
+#         body = {'message': f'Earthquake {magnitude} not found.'}
+#         status = 404
+
+#     return make_response(body, status)
+
 @app.route('/earthquakes/magnitude/<float:magnitude>')
 def get_by_magnitude(magnitude):
-    earthquake = Earthquake.query.filter(Earthquake.magnitude >= magnitude).all()
+    earthquakes = Earthquake.query.filter(Earthquake.magnitude >= magnitude).all()
 
-    if earthquake:
-        body = {
-            'count': len(earthquake),
-            'quakes': [
-                {
+    if earthquakes:
+        quakes_list = []
+        for earthquake in earthquakes:
+            quake_info = {
                 'id': earthquake.id,
                 'location': earthquake.location,
                 'magnitude': earthquake.magnitude,
                 'year': earthquake.year
-                },
-            ]
+            }
+            quakes_list.append(quake_info)
+
+        body = {
+            'count': len(quakes_list),
+            'quakes': quakes_list
         }
         status = 200
     else:
-        body = {'message': f'Earthquake {magnitude} not found.'}
+        body = {'message': f'No earthquakes found with magnitude {magnitude} or higher.'}
         status = 404
 
     return make_response(body, status)

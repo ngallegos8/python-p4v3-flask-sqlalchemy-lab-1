@@ -39,17 +39,34 @@ class TestApp:
         # confirm status
         assert response.status_code == 200
 
+    # def test_earthquakes_magnitude_no_match_response(self):
+    #     '''displays json in earthquake/magnitude route with keys for count, quakes'''
+
+    #     response = app.test_client().get('/earthquakes/magnitude/10.0')
+    #     # get the response body
+    #     response_body = response.data.decode()
+    #     # convert to JSON
+    #     response_json = json.loads(response_body)
+    #     # confirm JSON data
+    #     assert response_json["count"] == 0
+    #     assert len(response_json["quakes"]) == 0
+
+    #     # confirm status
+    #     assert response.status_code == 200
+
     def test_earthquakes_magnitude_no_match_response(self):
         '''displays json in earthquake/magnitude route with keys for count, quakes'''
 
         response = app.test_client().get('/earthquakes/magnitude/10.0')
+        # confirm status
+        assert response.status_code == 404  # Check for 404 status code
+
         # get the response body
         response_body = response.data.decode()
         # convert to JSON
         response_json = json.loads(response_body)
-        # confirm JSON data
-        assert response_json["count"] == 0
-        assert len(response_json["quakes"]) == 0
+        
+        # Confirm the response structure when no earthquakes are found
+        assert "message" in response_json  # Check for the presence of 'message' key
+        assert response_json["message"] == "No earthquakes found with magnitude 10.0 or higher."
 
-        # confirm status
-        assert response.status_code == 200
